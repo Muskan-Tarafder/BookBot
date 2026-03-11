@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if not messages %}
+<div class="welcome">
+  <span class="big-icon">📖</span>
+  <h2>What shall we read today?</h2>
+  <p>Ask me for book recommendations by genre, author, mood, or topic.</p>
+  <div class="suggestions">
+    {% for suggestion in suggestions %}
+    <form method="POST" action="{% url 'chat' %}">
+      {% csrf_token %}
+      <input type="hidden" name="message" value="{{ suggestion.suggestion }}">
+      <button type="submit" class="suggestion-btn">{{ suggestion.suggestion }}</button>
+    </form>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% for msg in messages %}
+<div class="message {{ msg.role }}">
+  <div class="avatar">{% if msg.role == 'user' %}👤{% else %}📚{% endif %}</div>
+  <div>
+    <div class="bubble">{{ msg.content }}</div>
+    {% if msg.source %}<div class="source-tag">{{ msg.source }}</div>{% endif %}
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}
